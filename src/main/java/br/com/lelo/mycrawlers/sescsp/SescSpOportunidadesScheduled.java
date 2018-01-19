@@ -24,16 +24,16 @@ public class SescSpOportunidadesScheduled {
 	private SescSpOportunidadesParameters parameters;
 
 	@Autowired
-	private GetRequest request;
-
-	@Autowired
 	private InputStreamDocumentConverter domConverter;
 
 	@Autowired
-	private KeyValueNodeConverter stringConverter;
+	private KeyValueNodeConverter keyValueConverter;
 
 	@Autowired
 	private XPathDocumentFilter xpathFilter;
+
+	@Autowired
+	private GetRequest getRequest;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -42,10 +42,10 @@ public class SescSpOportunidadesScheduled {
 	public void start() throws Exception {
 		logger.info("\n\n*****start*****");
 
-		InputStream inputStream = request.get(parameters.getUrl());
+		InputStream inputStream = getRequest.get(parameters.getUrl());
 		Document dom = domConverter.convert(inputStream);
 		NodeImpl node = xpathFilter.filter(dom, parameters.getXpathExpression());
-		System.out.println(stringConverter.convert(node));
+		System.out.println(keyValueConverter.convert(node));
 
 		logger.info("\n\n*****fim*****");
 	}
