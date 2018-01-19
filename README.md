@@ -8,4 +8,5 @@ mycrawlers é um conjunto de crawlers com scheduled.
 * [solução]  - Este crawler tem a função de notificar por email quando há novos jobs.
 
 #logística #dentista #motoristas #atendentes
+ 
 [https://oportunidades.sescsp.org.br/oportunidades/]
