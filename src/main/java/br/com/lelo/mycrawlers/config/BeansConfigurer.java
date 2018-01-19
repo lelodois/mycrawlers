@@ -1,4 +1,4 @@
-package br.com.lelo.mycrawlers;
+package br.com.lelo.mycrawlers.config;
 
 import java.nio.charset.Charset;
 
@@ -7,17 +7,12 @@ import javax.xml.xpath.XPathFactory;
 
 import org.htmlcleaner.CleanerProperties;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-@SpringBootApplication
-public class MyCrawlersApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(MyCrawlersApplication.class, args);
-	}
+@Configuration
+public class BeansConfigurer {
 
 	@Bean
 	@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -32,5 +27,4 @@ public class MyCrawlersApplication {
 		cleaner.setCharset(Charset.forName("utf-8").name());
 		return cleaner;
 	}
-
 }

@@ -1,10 +1,10 @@
-package br.com.lelo.mycrawlers.engine;
+package br.com.lelo.mycrawlers.sescsp;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SescspOportunidadesParameters {
+public class SescSpOportunidadesParameters {
 
 	@Value("${myproperties.sescsp.url}")
 	private String url;
@@ -19,4 +19,5 @@ public class SescspOportunidadesParameters {
 	public String getXpathExpression() {
 		return xpathExpression;
 	}
+
 }
