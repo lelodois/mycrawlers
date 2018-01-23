@@ -27,4 +27,5 @@ public class BeansConfigurer {
 		cleaner.setCharset(Charset.forName("utf-8").name());
 		return cleaner;
 	}
+
 }

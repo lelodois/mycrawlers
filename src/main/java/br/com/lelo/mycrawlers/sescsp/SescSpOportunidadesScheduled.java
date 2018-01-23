@@ -1,6 +1,7 @@
 package br.com.lelo.mycrawlers.sescsp;
 
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -8,14 +9,17 @@ import org.apache.xerces.dom.NodeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
+import br.com.lelo.mycrawlers.commons.EmailService;
 import br.com.lelo.mycrawlers.commons.GetRequest;
 import br.com.lelo.mycrawlers.commons.InputStreamDocumentConverter;
 import br.com.lelo.mycrawlers.commons.KeyValueNodeConverter;
 import br.com.lelo.mycrawlers.commons.XPathDocumentFilter;
+import br.com.lelo.mycrawlers.model.MessageConsumerItem;
 
 @Component
 public class SescSpOportunidadesScheduled {
@@ -35,6 +39,9 @@ public class SescSpOportunidadesScheduled {
 	@Autowired
 	private GetRequest getRequest;
 
+	@Autowired
+	private ApplicationContext context;
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@PostConstruct
@@ -45,8 +52,12 @@ public class SescSpOportunidadesScheduled {
 		InputStream inputStream = getRequest.get(parameters.getUrl());
 		Document dom = domConverter.convert(inputStream);
 		NodeImpl node = xpathFilter.filter(dom, parameters.getXpathExpression());
-		System.out.println(keyValueConverter.convert(node));
+		List<MessageConsumerItem> itens = keyValueConverter.convert(node);
+		// if (parameters.isNotEmpty(itens)) {
+		logger.info("sending email");
 
+		context.getBean(EmailService.class).send("leoeduar@gmail.com", "[Oportunidades Sesc]", MessageConsumerItem.getMailText(itens));
+		// }
 		logger.info("\n\n*****fim*****");
 	}
 
