@@ -19,6 +19,11 @@ public class SescSpOportunidadesParameters {
 	@Value("${myproperties.sescsp.emptymessage}")
 	private String emptyMessage;
 
+	@Value("#{'${myproperties.sescsp.mail.destinatarios}'.split(';')}")
+	private List<String> destinatarios;
+
+	private String lastMailKey;
+
 	public String getUrl() {
 		return url;
 	}
@@ -31,4 +36,15 @@ public class SescSpOportunidadesParameters {
 		return convert.isEmpty() || (convert.size() == 1 && emptyMessage.equalsIgnoreCase(convert.get(0).getValue()));
 	}
 
+	public List<String> getDestinatarios() {
+		return destinatarios;
+	}
+
+	public String getLastMailKey() {
+		return lastMailKey;
+	}
+
+	public void setLastMailKey(String lastMailKey) {
+		this.lastMailKey = lastMailKey;
+	}
 }

@@ -2,6 +2,7 @@ package br.com.lelo.mycrawlers.config;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,6 +11,18 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
 public class BeansMailConfigurer {
+
+	@Value("${myproperties.mail.user}")
+	private String mailUser;
+
+	@Value("${myproperties.mail.password}")
+	private String mailPassword;
+
+	@Value("${myproperties.mail.smtp}")
+	private String mailSmtp;
+
+	@Value("${myproperties.mail.smtp.port}")
+	private Integer mailSmtpPort;
 
 	@Bean
 	public SimpleMailMessage templateSimpleMessage() {
@@ -26,11 +39,10 @@ public class BeansMailConfigurer {
 	@Bean
 	public JavaMailSender getJavaMailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("smtp.gmail.com");
-		mailSender.setPort(587);
-
-		mailSender.setUsername("leoeduar@gmail.com");
-		mailSender.setPassword("");
+		mailSender.setHost(mailSmtp);
+		mailSender.setPort(mailSmtpPort);
+		mailSender.setUsername(mailUser);
+		mailSender.setPassword(mailPassword);
 
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtp");

@@ -45,19 +45,30 @@ public class SescSpOportunidadesScheduled {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@PostConstruct
-	@Scheduled(cron = "0 0 10-16 ? * MON,TUE,WED,THU,FRI *")
+	public void init() throws Exception {
+		start();
+	}
+
+	@Scheduled(cron = "0 0 9-18 * * MON-FRI")
 	public void start() throws Exception {
 		logger.info("\n\n*****start*****");
 
 		InputStream inputStream = getRequest.get(parameters.getUrl());
 		Document dom = domConverter.convert(inputStream);
 		NodeImpl node = xpathFilter.filter(dom, parameters.getXpathExpression());
-		List<MessageConsumerItem> itens = keyValueConverter.convert(node);
-		// if (parameters.isNotEmpty(itens)) {
+		this.sendMail(keyValueConverter.convert(node));
+	}
+
+	private void sendMail(List<MessageConsumerItem> itens) {
 		logger.info("sending email");
 
-		context.getBean(EmailService.class).send("leoeduar@gmail.com", "[Oportunidades Sesc]", MessageConsumerItem.getMailText(itens));
-		// }
+		for (String destinatario : parameters.getDestinatarios()) {
+			String mailText = MessageConsumerItem.getMailText(itens);
+			if (mailText.equalsIgnoreCase(parameters.getLastMailKey()) == false) {
+				context.getBean(EmailService.class).send(destinatario, "[Oportunidades Sesc]", mailText);
+				parameters.setLastMailKey(mailText);
+			}
+		}
 		logger.info("\n\n*****fim*****");
 	}
 
