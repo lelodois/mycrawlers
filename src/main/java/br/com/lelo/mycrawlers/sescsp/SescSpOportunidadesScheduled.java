@@ -9,7 +9,6 @@ import org.apache.xerces.dom.NodeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -40,7 +39,7 @@ public class SescSpOportunidadesScheduled {
 	private GetRequest getRequest;
 
 	@Autowired
-	private ApplicationContext context;
+	private EmailService mailService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -56,20 +55,9 @@ public class SescSpOportunidadesScheduled {
 		InputStream inputStream = getRequest.get(parameters.getUrl());
 		Document dom = domConverter.convert(inputStream);
 		NodeImpl node = xpathFilter.filter(dom, parameters.getXpathExpression());
-		this.sendMail(keyValueConverter.convert(node));
-	}
+		List<MessageConsumerItem> consumer = keyValueConverter.convert(node);
 
-	private void sendMail(List<MessageConsumerItem> itens) {
-		logger.info("sending email");
-
-		for (String destinatario : parameters.getDestinatarios()) {
-			String mailText = MessageConsumerItem.getMailText(itens);
-			if (mailText.equalsIgnoreCase(parameters.getLastMailKey()) == false) {
-				context.getBean(EmailService.class).send(destinatario, "[Oportunidades Sesc]", mailText);
-				parameters.setLastMailKey(mailText);
-			}
-		}
-		logger.info("\n\n*****fim*****");
+		parameters.setLastMailKey(mailService.send(consumer, parameters.getDestinatarios(), parameters.getLastMailKey()));
 	}
 
 }

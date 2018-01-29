@@ -15,7 +15,8 @@ public class GetRequest {
 
 	public InputStream get(String url) throws IOException {
 		logger.info("Searching in: " + url);
-		InputStream inputStream = Request.Get(url).execute().returnContent().asStream();
+		Request request = Request.Get(url);
+		InputStream inputStream = request.execute().returnContent().asStream();
 		logger.info("Result length: " + inputStream);
 		return inputStream;
 	}
